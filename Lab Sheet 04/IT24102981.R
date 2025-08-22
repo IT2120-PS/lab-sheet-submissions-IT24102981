@@ -1,0 +1,55 @@
+setwd("C:/Users/IT24102981/Desktop/IT24102981")
+
+branch_data<-read.table("Exercise.txt",header=TRUE,sep=",")
+fix(branch_data)
+
+attach(branch_data)
+
+str(branch_data)
+summary(branch_data)
+
+identify_scale <- function(branch_data) {
+  sapply(names(branch_data), function(var) {
+    v <- branch_data[[var]]
+    
+    if (is.ordered(v)) {
+      return("Ordinal")
+    } else if (is.factor(v)) {
+      return("Nominal")
+    } else if (is.numeric(v)) {
+      
+      return("Interval/Ratio (numeric)")
+    } else if (is.character(v)) {
+      return("Nominal (character)")
+    } else if (is.logical(v)) {
+      return("Nominal (logical)")
+    } else {
+      return("Unknown")
+    }
+  })
+}
+
+
+scales <- identify_scale(branch_data)
+print(scales)
+
+boxplot(Sales_X1, main="Box Plot for Sales",outline=TRUE,outpch=8,horizontal=TRUE)
+
+
+summary(branch_data$Advertising_X2)
+
+fivenum(branch_data$Advertising_X2)
+
+IQR(branch_data$Advertising_X2)
+
+
+find_outliers <- function(x){
+  Q1 <-quantile(x,0.25)
+  Q3 <- quantile(x,0.75)
+  IQR <-Q3-Q1
+  lower_bound <-Q1-1.5*IQR
+  upper_bound <-Q3+1.5*IQR
+  outliers <-x[x<lower_bound |x>upper_bound]
+  return(outliers)
+}
+find_outliers(branch_data$Years_X3)
